@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Network from '../components/Network.astro';
+import EntryRow from '../components/EntryRow.astro';
+import { entries } from '../lib/content';
+import { projects, site, topics } from '../lib/site';
+const posts = await entries('blog');
+const featured = [...posts.filter((entry) => entry.data.featured), ...posts.filter((entry) => !entry.data.featured)].slice(0, 3);
+const project = projects[0];
+---
+<Base>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow"><span></span>个人技术博客 <i></i> AI / SYSTEMS</p>
+      <h1>你好，这里是<br /><strong>Ashley Lab<span>.</span></strong></h1>
+      <p class="hero-summary">{site.bio}</p>
+      <div class="hero-actions">
+        <a class="button primary" href="/blog/">阅读技术博客 <Icon name="arrow" size={18} /></a>
+        <a class="button secondary" href="/about/">了解我 <Icon name="up" size={16} /></a>
+      </div>
+    </div>
+    <Network />
+  </section>
+  <div class="home-grid">
+    <section class="home-section" aria-labelledby="featured">
+      <p class="section-kicker">01 / WRITING</p>
+      <div class="section-heading"><h2 id="featured">精选文章</h2><a href="/blog/">全部文章 <Icon name="arrow" size={15} /></a></div>
+      {featured.length ? featured.map((entry) => <EntryRow entry={entry} level={3} />) : <p class="muted">文章整理中。</p>}
+      <a href="/notes/" class="note-link"><span class="feature-icon"><Icon name="book" size={20} /></span><span><strong>学习笔记</strong><small>查看课程笔记与知识索引</small></span><Icon name="arrow" size={17} /></a>
+    </section>
+    <section class="home-section" aria-labelledby="interests">
+      <p class="section-kicker">02 / TOPICS</p>
+      <div class="section-heading"><h2 id="interests">研究兴趣</h2></div>
+      <div class="topics-card">
+        <div><Icon name="layers" size={21} /><strong>从模型到系统</strong></div>
+        <p>从框架中理解模型训练，再向下探索算子、加速器与运行时。</p>
+        <div class="pills">{Object.entries(topics).map(([key, label]) => <a class="pill" href={`/blog/tag/${key}/`}>{label}</a>)}</div>
+      </div>
+    </section>
+  </div>
+  {project && <section class="home-section home-project" aria-labelledby="projects">
+    <p class="section-kicker">03 / PROJECTS</p>
+    <div class="section-heading"><h2 id="projects">精选项目</h2><a href="/projects/">全部项目 <Icon name="arrow" size={15} /></a></div>
+    <a class="note-link" href={`/projects/#${project.id}`}><span class="feature-icon"><Icon name="box" size={21} /></span><span><strong>{project.title}</strong><small>{project.summary}</small></span><Icon name="up" size={18} /></a>
+  </section>}
+</Base>

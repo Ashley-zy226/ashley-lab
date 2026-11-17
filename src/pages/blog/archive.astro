@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import EntryRow from '../../components/EntryRow.astro';
+import BlogList from '../../components/BlogList.astro';
+import { entries, yearOf } from '../../lib/content';
+const posts = await entries('blog');
+const years = [...new Set(posts.map((entry) => yearOf(entry.data.date)))];
+---
+<Base title="文章归档" description="按发表年份浏览技术博客文章。">
+  <PageIntro label="01 / ARCHIVE" title="文章归档" description="按发表年份浏览技术博客文章。" />
+  <BlogList entries={posts} selected="/blog/archive/" archive>
+    {years.length ? years.map((year) => <section class="year-group"><h2 id={String(year)}>{year}</h2>{posts.filter((entry) => yearOf(entry.data.date) === year).map((entry) => <EntryRow entry={entry} level={3} />)}</section>) : <p class="empty">暂时没有文章。</p>}
+  </BlogList>
+</Base>

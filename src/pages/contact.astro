@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../lib/site';
+---
+<Base title="联系" description="技术交流与合作的联系方式。">
+  <PageIntro label="05 / CONTACT" title="联系" description="欢迎就技术文章、项目实践与研究兴趣交流。" />
+  <div class="contact-grid narrow">
+    <section class="panel"><span class="feature-icon"><Icon name="mail" /></span><h2>电子邮件</h2>{site.email ? <a class="text-link" href={'mailto:' + site.email}>{site.email}</a> : <p>［公开邮箱待填写］</p>}</section>
+    <section class="panel"><span class="feature-icon"><Icon name="github" /></span><h2>GitHub</h2>{site.github ? <a class="text-link" href={site.github}>访问 GitHub <Icon name="up" size={14} /></a> : <p>［GitHub 个人主页待填写］</p>}</section>
+    {site.socials.map(({ label, url }) => <section class="panel"><h2>{label}</h2><a class="text-link" href={url}>访问主页 <Icon name="up" size={14} /></a></section>)}
+  </div>
+</Base>

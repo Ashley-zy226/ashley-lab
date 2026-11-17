@@ -1,0 +1,13 @@
+---
+import Icon from './Icon.astro';
+import { categories } from '../lib/site';
+import { dateText, urlFor, type Entry } from '../lib/content';
+const { entry, level = 2 } = Astro.props as { entry: Entry; level?: 2 | 3 };
+const Heading = level === 2 ? "h2" : "h3";
+const { data } = entry;
+---
+<a class="entry-row" href={urlFor(entry)}>
+  <div class="entry-meta"><time datetime={dateText(data.date)}>{dateText(data.date)}</time><span>{categories[data.category]}</span>{data.example && <span class="example-tag">示例</span>}</div>
+  <div class="entry-title"><Heading>{data.title}</Heading><Icon name="up" size={20} /></div>
+  <p>{data.description}</p>
+</a>

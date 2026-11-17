@@ -1,0 +1,93 @@
+---
+import Icon from '../components/Icon.astro';
+import { site } from '../lib/site';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; noindex?: boolean; article?: boolean; }
+const { title, description = site.description, noindex = false, article = false } = Astro.props;
+const fullTitle = title ? `${title} · ${site.title}` : `${site.title} · 人工智能与计算机系统`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  ['/', '首页'], ['/blog/', '技术博客'], ['/notes/', '学习笔记'],
+  ['/projects/', '项目作品'], ['/about/', '关于我'], ['/contact/', '联系'],
+];
+const active = (href: string) => href === '/' ? Astro.url.pathname === '/' : Astro.url.pathname.startsWith(href);
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex,follow" />}
+  <link rel="canonical" href={canonical} />
+  <meta property="og:site_name" content={site.title} />
+  <meta property="og:type" content={article ? 'article' : 'website'} />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={new URL('/social-card.png', Astro.site)} />
+  <meta property="og:image:alt" content="Ashley Lab · AI / Infra / Systems" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
+  <script is:inline>
+    try {
+      const theme = localStorage.getItem('ashley-theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch {}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/"><span class="brand-icon"><Icon name="terminal" size={21} /></span><span>Ashley<span class="brand-soft"> Lab</span></span></a>
+      <nav id="site-nav" class="nav" aria-label="主导航">
+        {nav.map(([href, label]) => <a href={href} aria-current={active(href) ? (Astro.url.pathname === href ? 'page' : 'true') : undefined}>{label}</a>)}
+      </nav>
+      <div class="header-tools">
+        <a class="search-link" href="/search/" title="搜索（/）"><Icon name="search" size={16} /><span>搜索</span><kbd>/</kbd></a>
+        <button hidden class="theme-button" type="button" aria-label="切换深浅主题">
+          <span class="sun"><Icon name="sun" size={19} /></span><span class="moon"><Icon name="moon" size={19} /></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap" tabindex="-1"><slot /></main>
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div><a class="brand" href="/"><Icon name="terminal" size={19} /> Ashley Lab</a><p>人工智能 · 系统 · 学习记录</p></div>
+      <div class="footer-links">
+        <a href="/about/">关于我</a><a href="/contact/">联系</a><a href="/rss.xml"><Icon name="rss" size={14} /> RSS</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const button = document.querySelector<HTMLButtonElement>('.theme-button');
+    if (button) {
+      const root = document.documentElement;
+      const preference = matchMedia('(prefers-color-scheme: dark)');
+      function mode() { return root.dataset.theme ?? (preference.matches ? 'dark' : 'light'); }
+      function label() { button?.setAttribute('aria-label', mode() === 'dark' ? '切换到浅色主题' : '切换到深色主题'); }
+      button.hidden = false;
+      label();
+      preference.addEventListener('change', label);
+      button.addEventListener('click', () => {
+        root.dataset.theme = mode() === 'dark' ? 'light' : 'dark';
+        try { localStorage.setItem('ashley-theme', root.dataset.theme); } catch {}
+        label();
+      });
+    }
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey || event.defaultPrevented) return;
+      if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable]')) return;
+      event.preventDefault();
+      const field = document.querySelector<HTMLInputElement>('#search-query');
+      if (field) field.focus();
+      else location.assign('/search/');
+    });
+  </script>
+</body>
+</html>

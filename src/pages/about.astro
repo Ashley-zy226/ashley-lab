@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Icon from '../components/Icon.astro';
+import { site, topics } from '../lib/site';
+---
+<Base title="关于我" description="个人简介、教育背景与技术方向。">
+  <PageIntro label="04 / ABOUT" title="关于我" description={site.bio} />
+  <div class="profile-grid">
+    <section class="panel"><div class="feature-icon"><Icon name="terminal" /></div><h2>{site.name}</h2><p class="accent">人工智能专业 · 大学生</p><p>在这里整理从理论、代码到实验验证的学习过程，欢迎就文章与项目交流。</p><a class="text-link" href="/contact/">查看联系方式 <Icon name="arrow" size={15} /></a></section>
+    <div class="detail-stack">
+      <section class="panel"><div class="panel-top"><h2>教育经历</h2><Icon name="book" /></div>
+        <dl class="facts"><div><dt>学校 / 院系</dt><dd>{site.school}</dd></div><div><dt>专业</dt><dd>人工智能</dd></div><div><dt>学位 / 年级</dt><dd>{site.degree}</dd></div><div><dt>时间</dt><dd>{site.period}</dd></div></dl>
+      </section>
+      <section class="panel"><div class="panel-top"><h2>技能与学习方向</h2><Icon name="layers" /></div><p>当前关注与计划持续学习的方向。</p><div class="pills">{Object.entries(topics).map(([key, label]) => <a class="pill" href={`/blog/tag/${key}/`}>{label}</a>)}</div></section>
+    </div>
+  </div>
+</Base>

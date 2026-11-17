@@ -1,0 +1,31 @@
+---
+import { type CollectionEntry } from 'astro:content';
+import EntryRow from './EntryRow.astro';
+import Icon from './Icon.astro';
+import { categories, topics } from '../lib/site';
+interface Props { entries: CollectionEntry<'blog'>[]; selected?: string; archive?: boolean; }
+const { entries, selected = '/blog/', archive = false } = Astro.props;
+---
+<div class="listing-grid">
+  <section class="listing-main" aria-label="文章列表">
+    <div class="list-top"><span>{entries.length} 篇文章</span><a href={archive ? '/blog/' : '/blog/archive/'}><Icon name="clock" size={15} />{archive ? '返回文章列表' : '按年份归档'}</a></div>
+    <slot>
+      {entries.length ? entries.map((entry) => <EntryRow entry={entry} />) : <div class="empty"><p>这个主题还没有发布文章。</p><a href="/blog/">浏览全部文章 →</a></div>}
+    </slot>
+  </section>
+  <aside class="listing-side" aria-label="文章分类">
+    <h2>分类</h2>
+    <div class="category-list">
+      <a href="/blog/" aria-current={selected === '/blog/' ? 'page' : undefined}>全部文章 <span>→</span></a>
+      {Object.entries(categories).map(([name, label]) => {
+        const href = `/blog/category/${name}/`;
+        return <a href={href} aria-current={selected === href ? 'page' : undefined}>{label}<span>→</span></a>;
+      })}
+    </div>
+    <h2>标签</h2>
+    <div class="pills">{Object.entries(topics).map(([name, label]) => {
+      const href = `/blog/tag/${name}/`;
+      return <a class="pill" href={href} aria-current={selected === href ? 'page' : undefined}>{label}</a>;
+    })}</div>
+  </aside>
+</div>

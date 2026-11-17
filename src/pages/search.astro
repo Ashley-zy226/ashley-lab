@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Icon from '../components/Icon.astro';
+const dev = import.meta.env.DEV;
+---
+<Base title="全文搜索" description="在技术文章和课程笔记中搜索关键词。" noindex>
+  <PageIntro label="SEARCH / INDEX" title="全文搜索" description="搜索博客和课程笔记的正文，例如「步幅」或 PyTorch。" />
+  <div class="search-page narrow">
+    <form class="search-form" role="search" data-dev={dev}>
+      <label class="sr-only" for="search-query">搜索关键词</label><Icon name="search" />
+      <input type="search" id="search-query" name="q" placeholder="输入关键词…" autocomplete="off" required />
+      <button class="button primary" type="submit">搜索</button>
+    </form>
+    <p id="search-status" class="muted" role="status">{dev ? '搜索索引在构建时生成。请运行 npm run build && npm run preview 后试用。' : '输入关键词开始搜索。'}</p>
+    <ol id="search-results" class="search-results"></ol>
+    <noscript><p>全文搜索需要 JavaScript；你也可以浏览<a class="text-link" href="/blog/">技术博客</a>或<a class="text-link" href="/notes/">学习笔记</a>。</p></noscript>
+  </div>
+</Base>
+<script>
+  type Hit = { url: string; meta: { title?: string; section?: string }; excerpt: string };
+  type Search = { search(query: string): Promise<{ results: { data(): Promise<Hit> }[] }> };
+  const form = document.querySelector<HTMLFormElement>('.search-form')!;
+  const input = document.querySelector<HTMLInputElement>('#search-query')!;
+  const status = document.querySelector<HTMLParagraphElement>('#search-status')!;
+  const list = document.querySelector<HTMLOListElement>('#search-results')!;
+  const isDev = form.dataset.dev === 'true';
+  let engine: Promise<Search> | undefined;
+  let revision = 0;
+  let shown = 0;
+  let hits: { data(): Promise<Hit> }[] = [];
+  let next: HTMLButtonElement | undefined;
+
+  function load() {
+    const modulePath = '/pagefind/pagefind.js';
+    return engine ??= import(/* @vite-ignore */ modulePath).catch((error) => { engine = undefined; throw error; });
+  }
+
+  function resultNode(hit: Hit) {
+    const item = document.createElement('li');
+    const url = new URL(hit.url, location.origin);
+    if (url.origin !== location.origin) return item;
+    const link = document.createElement('a');
+    link.href = url.href;
+    link.textContent = hit.meta.title ?? url.pathname;
+    const kind = document.createElement('small');
+    kind.textContent = hit.meta.section ?? '';
+    const excerpt = document.createElement('p');
+    // Pagefind returns marked-up excerpts. Only keep text and highlight spans.
+    const template = document.createElement('template');
+    template.innerHTML = hit.excerpt;
+    for (const child of template.content.childNodes) {
+      if (child instanceof HTMLElement && child.tagName === 'MARK') {
+        const mark = document.createElement('mark');
+        mark.textContent = child.textContent;
+        excerpt.append(mark);
+      } else if (child.nodeType === Node.TEXT_NODE) excerpt.append(child.textContent ?? '');
+    }
+    item.append(kind, link, excerpt);
+    return item;
+  }
+
+  async function showMore(id: number) {
+    if (next) next.disabled = true;
+    const batch = await Promise.all(hits.slice(shown, shown + 10).map((hit) => hit.data()));
+    if (id !== revision) return;
+    list.append(...batch.map(resultNode));
+    shown += batch.length;
+    next?.remove();
+    if (shown < hits.length) {
+      next = document.createElement('button');
+      next.type = 'button';
+      next.className = 'button secondary';
+      next.textContent = '加载更多结果';
+      next.addEventListener('click', () => void showMore(id).catch(fail));
+      list.after(next);
+    }
+  }
+
+  function fail() {
+    status.textContent = '暂时无法加载搜索索引。请刷新后重试，或从文章和笔记列表浏览。';
+    if (next) next.disabled = false;
+  }
+
+  async function run() {
+    const query = input.value.trim();
+    if (isDev) return;
+    const id = ++revision;
+    const url = new URL(location.href);
+    if (query) url.searchParams.set('q', query);
+    else url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+    list.replaceChildren();
+    next?.remove();
+    hits = [];
+    shown = 0;
+    if (!query) { status.textContent = '输入关键词开始搜索。'; return; }
+    status.textContent = '搜索中…';
+    try {
+      const index = await load();
+      const { results } = await index.search(query);
+      if (id !== revision) return;
+      hits = results;
+      status.textContent = hits.length ? `找到 ${hits.length} 条结果。` : '没有找到匹配的内容，试试其他关键词。';
+      await showMore(id);
+    } catch { if (id === revision) fail(); }
+  }
+
+  form.addEventListener('submit', (event) => { event.preventDefault(); void run(); });
+  input.value = new URLSearchParams(location.search).get('q') ?? '';
+  if (input.value) void run();
+</script>

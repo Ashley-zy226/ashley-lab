@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageIntro from '../../../components/PageIntro.astro';
+import BlogList from '../../../components/BlogList.astro';
+import { entries } from '../../../lib/content';
+import { topics } from '../../../lib/site';
+export function getStaticPaths() {
+  return Object.entries(topics).map(([tag, label]) => ({ params: { tag }, props: { label } }));
+}
+const { tag } = Astro.params;
+const { label } = Astro.props;
+const posts = (await entries('blog')).filter((entry) => entry.data.tags.some((key) => key === tag));
+const description = `浏览带有「${label}」标签的技术文章。`;
+---
+<Base title={`${label} · 标签`} description={description} noindex={!posts.length}>
+  <PageIntro label="01 / TAG" title={label} description={description} />
+  <BlogList entries={posts} selected={`/blog/tag/${tag}/`} />
+</Base>

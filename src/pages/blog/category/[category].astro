@@ -1,0 +1,18 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageIntro from '../../../components/PageIntro.astro';
+import BlogList from '../../../components/BlogList.astro';
+import { entries } from '../../../lib/content';
+import { categories } from '../../../lib/site';
+export function getStaticPaths() {
+  return Object.entries(categories).map(([category, label]) => ({ params: { category }, props: { label } }));
+}
+const { category } = Astro.params;
+const { label } = Astro.props;
+const posts = (await entries('blog')).filter((entry) => entry.data.category === category);
+const description = `浏览「${label}」分类下的技术文章。`;
+---
+<Base title={`${label} · 分类`} description={description} noindex={!posts.length}>
+  <PageIntro label="01 / CATEGORY" title={label} description={description} />
+  <BlogList entries={posts} selected={`/blog/category/${category}/`} />
+</Base>

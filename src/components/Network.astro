@@ -1,0 +1,17 @@
+---
+const columns = [[104, [112, 157, 202]], [195, [90, 135, 180, 225]], [286, [112, 157, 202]], [377, [135, 180]]] as const;
+const signal = [[104, 157], [195, 135], [286, 157], [377, 135]];
+---
+<div class="lab-figure" aria-hidden="true">
+  <div class="figure-top"><span><i></i> LAB / FIG. 01</span><span class="figure-ref">MODEL_GRAPH</span></div>
+  <svg class="network" viewBox="60 55 360 204" fill="none">
+    <path d="M75 69h13m-13 0v13m330-13h-13m13 0v13M75 245h13m-13 0v-13m330 13h-13m13 0v-13" class="frame-ticks" />
+    {columns.slice(0, -1).flatMap(([x, rows], index) => rows.flatMap((y) => columns[index + 1][1].map((ty: number) => <path class="edge" d={`M ${x} ${y} L ${columns[index + 1][0]} ${ty}`} />)))}
+    <polyline class="signal" points={signal.map((pair) => pair.join(',')).join(' ')} />
+    {columns.flatMap(([x, rows]) => rows.map((y) => {
+      const lit = signal.some(([sx, sy]) => sx === x && sy === y);
+      return <g>{lit && <circle class="halo" cx={x} cy={y} r="13" />}<circle class={lit ? 'node lit' : 'node'} cx={x} cy={y} r={lit ? 6 : 4.5} /></g>;
+    }))}
+  </svg>
+  <div class="figure-bottom"><span>输入 <b>→</b> 隐层 <b>→</b> 输出</span><span>01 / AI SYSTEMS</span></div>
+</div>
