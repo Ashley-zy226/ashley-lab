@@ -4,7 +4,7 @@ import { entries, urlFor } from '../lib/content';
 import { site } from '../lib/site';
 
 export const GET: APIRoute = async ({ site: origin }) => {
-  const published = [...await entries('blog'), ...await entries('notes')].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  const published = await entries();
   return rss({
     title: site.title,
     description: site.description,

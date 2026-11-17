@@ -1,6 +1,6 @@
 # Ashley Lab
 
-中文个人技术博客、学习笔记和作品集。使用 Astro、TypeScript 和 Markdown / MDX，构建为纯静态网站；文章、搜索索引与数学字体均随站点发布。
+中文个人技术博客和作品集。使用 Astro、TypeScript 和 Markdown / MDX，构建为纯静态网站；文章、搜索索引与数学字体均随站点发布。
 
 ## 本地开发
 
@@ -19,15 +19,14 @@ npm run build
 npm run preview
 ```
 
-全文索引在 `npm run build` 时生成，测试搜索请使用生产预览。默认搜索博客和笔记的正文，可试搜「步幅」和「提前退出」。在任意页面按 `/` 可进入搜索。
+全文索引在 `npm run build` 时生成，测试搜索请使用生产预览。可以搜索博客正文，例如「步幅」。在任意页面按 `/` 可进入搜索。
 
 ## 维护内容
 
 | 文件 / 目录 | 用途 |
 | --- | --- |
-| `src/lib/site.ts` | 个人简介、姓名、教育信息、公开邮箱、GitHub、社交链接、项目、分类与主题 |
+| `src/lib/site.ts` | 个人简介、姓名、教育信息、奖项、公开邮箱、GitHub、社交链接、项目、分类与主题 |
 | `src/content/blog/` | 技术文章；新文件自动进入列表、分类、标签与年份归档 |
-| `src/content/notes/` | 课程笔记；按 frontmatter 的 `course` 字段分组 |
 | `src/styles/global.css` | 响应式布局、主题颜色与文章排版 |
 | `astro.config.mjs` | 站点地址、Markdown 处理器和静态构建设置 |
 | `public/` | 站标、分享图与可引用的公开文件 |
@@ -58,8 +57,8 @@ $$
 - 正文从二级标题开始；二、三级标题自动生成目录。代码围栏可标注 `python`、`cpp`、`bash` 等语言。
 - 示例内容用 `example: true` 标记；更新时可填 `updated: YYYY-MM-DD`。想置于首页精选优先位置时设 `featured: true`。
 - 草稿设为 `draft: true`。草稿不会出现在输出、RSS 或搜索索引中；如果 GitHub 仓库公开，仓库里的草稿源码仍可被看到。
-- 笔记使用同样的字段，并添加 `course: 数据结构与算法`。文件名决定链接，推荐小写英文和短横线；避免占用 `archive`、`tag`、`category` 等已有路径。发布后如需改名，给旧地址配置跳转。
-- 发布前，将 `draft` 改为 `false`，运行检查和构建，确认文章显示、目录、公式和搜索正常，再提交变更。初始 Markdown 和 MDX 内容均为明确标注的示例，可保留或替换。
+- 文件名决定链接，推荐小写英文和短横线；避免占用 `archive`、`tag`、`category` 等已有路径。发布后如需改名，给旧地址配置跳转。
+- 发布前，将 `draft` 改为 `false`，运行检查和构建，确认文章显示、目录、公式和搜索正常，再提交变更。初始 Markdown 文章已标注为示例，可保留或替换。
 
 ## 推送到 GitHub
 

@@ -7,7 +7,7 @@ const { title, description = site.description, noindex = false, article = false 
 const fullTitle = title ? `${title} · ${site.title}` : `${site.title} · 人工智能与计算机系统`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const nav = [
-  ['/', '首页'], ['/blog/', '技术博客'], ['/notes/', '学习笔记'],
+  ['/', '首页'], ['/blog/', '技术博客'],
   ['/projects/', '项目作品'], ['/about/', '关于我'], ['/contact/', '联系'],
 ];
 const active = (href: string) => href === '/' ? Astro.url.pathname === '/' : Astro.url.pathname.startsWith(href);

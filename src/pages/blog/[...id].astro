@@ -2,7 +2,7 @@
 import Article from '../../layouts/Article.astro';
 import { entries } from '../../lib/content';
 export async function getStaticPaths() {
-  return (await entries('blog')).map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+  return (await entries()).map((entry) => ({ params: { id: entry.id }, props: { entry } }));
 }
 const { entry } = Astro.props;
 ---

@@ -8,11 +8,10 @@ const { entry } = Astro.props as { entry: Entry };
 const { data } = entry;
 const { Content, headings } = await render(entry);
 const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
-const blog = entry.collection === 'blog';
 ---
 <Base title={data.title} description={data.description} article>
   <div class="article-top">
-    <nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href={blog ? '/blog/' : '/notes/'}>{blog ? '技术博客' : '学习笔记'}</a><span>/</span><span>{blog ? categories[data.category] : entry.data.course}</span></nav>
+    <nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/blog/">技术博客</a><span>/</span><span>{categories[data.category]}</span></nav>
     <header class="article-heading">
       <div class="entry-meta"><time datetime={dateText(data.date)}>{dateText(data.date)}</time>{data.updated && <span>更新于 <time datetime={dateText(data.updated)}>{dateText(data.updated)}</time></span>}{data.example && <span class="example-tag">示例内容</span>}</div>
       <h1>{data.title}</h1>
@@ -26,9 +25,8 @@ const blog = entry.collection === 'blog';
     </aside>}
     <article class="prose" data-pagefind-body>
       <span hidden data-pagefind-meta="title">{data.title}</span>
-      <span hidden data-pagefind-meta="section">{blog ? '技术博客' : '学习笔记'}</span>
       <Content />
     </article>
   </div>
-  <div class="article-end"><a href={blog ? '/blog/' : '/notes/'}>← 返回{blog ? '技术博客' : '学习笔记'}</a></div>
+  <div class="article-end"><a href="/blog/">← 返回技术博客</a></div>
 </Base>

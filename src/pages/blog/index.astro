@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PageIntro from '../../components/PageIntro.astro';
 import BlogList from '../../components/BlogList.astro';
 import { entries } from '../../lib/content';
-const posts = await entries('blog');
+const posts = await entries();
 const description = '围绕深度学习、AI 基础设施与计算机系统的技术文章。';
 ---
 <Base title="技术博客" description={description}>

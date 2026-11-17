@@ -9,7 +9,7 @@ export function getStaticPaths() {
 }
 const { category } = Astro.params;
 const { label } = Astro.props;
-const posts = (await entries('blog')).filter((entry) => entry.data.category === category);
+const posts = (await entries()).filter((entry) => entry.data.category === category);
 const description = `浏览「${label}」分类下的技术文章。`;
 ---
 <Base title={`${label} · 分类`} description={description} noindex={!posts.length}>

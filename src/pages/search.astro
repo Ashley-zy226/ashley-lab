@@ -4,8 +4,8 @@ import PageIntro from '../components/PageIntro.astro';
 import Icon from '../components/Icon.astro';
 const dev = import.meta.env.DEV;
 ---
-<Base title="全文搜索" description="在技术文章和课程笔记中搜索关键词。" noindex>
-  <PageIntro label="SEARCH / INDEX" title="全文搜索" description="搜索博客和课程笔记的正文，例如「步幅」或 PyTorch。" />
+<Base title="全文搜索" description="搜索技术文章中的关键词。" noindex>
+  <PageIntro label="SEARCH / INDEX" title="全文搜索" description="搜索技术文章的正文，例如「步幅」或 PyTorch。" />
   <div class="search-page narrow">
     <form class="search-form" role="search" data-dev={dev}>
       <label class="sr-only" for="search-query">搜索关键词</label><Icon name="search" />
@@ -14,11 +14,11 @@ const dev = import.meta.env.DEV;
     </form>
     <p id="search-status" class="muted" role="status">{dev ? '搜索索引在构建时生成。请运行 npm run build && npm run preview 后试用。' : '输入关键词开始搜索。'}</p>
     <ol id="search-results" class="search-results"></ol>
-    <noscript><p>全文搜索需要 JavaScript；你也可以浏览<a class="text-link" href="/blog/">技术博客</a>或<a class="text-link" href="/notes/">学习笔记</a>。</p></noscript>
+    <noscript><p>全文搜索需要 JavaScript；你也可以浏览<a class="text-link" href="/blog/">技术博客</a>。</p></noscript>
   </div>
 </Base>
 <script>
-  type Hit = { url: string; meta: { title?: string; section?: string }; excerpt: string };
+  type Hit = { url: string; meta: { title?: string }; excerpt: string };
   type Search = { search(query: string): Promise<{ results: { data(): Promise<Hit> }[] }> };
   const form = document.querySelector<HTMLFormElement>('.search-form')!;
   const input = document.querySelector<HTMLInputElement>('#search-query')!;
@@ -43,8 +43,6 @@ const dev = import.meta.env.DEV;
     const link = document.createElement('a');
     link.href = url.href;
     link.textContent = hit.meta.title ?? url.pathname;
-    const kind = document.createElement('small');
-    kind.textContent = hit.meta.section ?? '';
     const excerpt = document.createElement('p');
     // Pagefind returns marked-up excerpts. Only keep text and highlight spans.
     const template = document.createElement('template');
@@ -56,7 +54,7 @@ const dev = import.meta.env.DEV;
         excerpt.append(mark);
       } else if (child.nodeType === Node.TEXT_NODE) excerpt.append(child.textContent ?? '');
     }
-    item.append(kind, link, excerpt);
+    item.append(link, excerpt);
     return item;
   }
 
@@ -78,7 +76,7 @@ const dev = import.meta.env.DEV;
   }
 
   function fail() {
-    status.textContent = '暂时无法加载搜索索引。请刷新后重试，或从文章和笔记列表浏览。';
+    status.textContent = '暂时无法加载搜索索引。请刷新后重试，或浏览技术博客列表。';
     if (next) next.disabled = false;
   }
 

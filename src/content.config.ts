@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { categories, topics } from './lib/site';
 
-const common = z.object({
+const blogSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   date: z.coerce.date(),
@@ -16,6 +16,5 @@ const common = z.object({
 });
 const files = '**/[!_]*.{md,mdx}';
 export const collections = {
-  blog: defineCollection({ loader: glob({ pattern: files, base: './src/content/blog' }), schema: common }),
-  notes: defineCollection({ loader: glob({ pattern: files, base: './src/content/notes' }), schema: common.extend({ course: z.string().min(1) }) }),
+  blog: defineCollection({ loader: glob({ pattern: files, base: './src/content/blog' }), schema: blogSchema }),
 };

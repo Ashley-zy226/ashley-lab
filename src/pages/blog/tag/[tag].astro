@@ -9,7 +9,7 @@ export function getStaticPaths() {
 }
 const { tag } = Astro.params;
 const { label } = Astro.props;
-const posts = (await entries('blog')).filter((entry) => entry.data.tags.some((key) => key === tag));
+const posts = (await entries()).filter((entry) => entry.data.tags.some((key) => key === tag));
 const description = `浏览带有「${label}」标签的技术文章。`;
 ---
 <Base title={`${label} · 标签`} description={description} noindex={!posts.length}>

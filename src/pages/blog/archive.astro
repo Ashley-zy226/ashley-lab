@@ -4,7 +4,7 @@ import PageIntro from '../../components/PageIntro.astro';
 import EntryRow from '../../components/EntryRow.astro';
 import BlogList from '../../components/BlogList.astro';
 import { entries, yearOf } from '../../lib/content';
-const posts = await entries('blog');
+const posts = await entries();
 const years = [...new Set(posts.map((entry) => yearOf(entry.data.date)))];
 ---
 <Base title="文章归档" description="按发表年份浏览技术博客文章。">

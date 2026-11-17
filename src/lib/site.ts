@@ -1,15 +1,21 @@
 export const site = {
   title: 'Ashley Lab',
-  description: '人工智能专业学生的技术博客与学习笔记。记录深度学习、AI 基础设施与计算机系统的学习和实践。',
-  name: '［真实姓名待填写］',
-  school: '［学校及院系待填写］',
-  degree: '［学位及年级待填写］',
-  period: '［入学及预计毕业时间待填写］',
-  bio: '我是一名人工智能专业的大学生，关注深度学习、AI 基础设施与计算机系统。这里记录我的技术文章、课程笔记和项目实践。',
-  email: '',
-  github: '',
+  description: 'Ashley_zy 的个人技术博客和项目作品集。记录深度学习、AI 基础设施与计算机系统的学习和实践。',
+  name: 'Ashley_zy',
+  school: '中山大学',
+  major: '人工智能',
+  cohort: 2025,
+  interests: '关注深度学习、AI 基础设施与计算机系统。这里记录我的技术文章和项目实践。',
+  awards: [
+    { year: '2025–2026', title: '中山大学校级一等奖学金' },
+    { year: '2025–2026', title: '国家奖学金' },
+  ],
+  email: 'zhanssh@mail2.sysu.edu.cn',
+  github: 'Ashley-zy226',
   socials: [] as { label: string; url: string }[],
 };
+
+export const bio = `我是 ${site.name}，${site.school}${site.major}专业 ${site.cohort} 级学生。${site.interests}`;
 
 export const categories = {
   'deep-learning': '深度学习',
@@ -35,7 +41,7 @@ export const projects: {
 }[] = [{
   id: 'ashley-lab',
   title: 'Ashley Lab · 个人技术站',
-  summary: '用 Astro 搭建的技术博客、课程笔记和作品集。',
+  summary: '用 Astro 搭建的技术博客和作品集。',
   detail: '用内容集合管理 Markdown / MDX，在构建时生成静态页面与中文全文索引。此项目就是你正在浏览的网站。',
   stack: ['Astro', 'TypeScript', 'Pagefind'],
   status: '第一版',
