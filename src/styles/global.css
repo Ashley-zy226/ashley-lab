@@ -173,6 +173,7 @@ a.pill:hover,.pill[aria-current] { border-color: var(--accent); color: var(--acc
 .toc li.sub { padding-left: 12px; }
 .toc a { display: inline-block; padding-block: 3px; color: var(--muted); font-size: 13px; }
 .toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 700; }
 .prose { grid-column: 1; grid-row: 1; min-width: 0; line-height: 1.95; font-size: 16px; overflow-wrap: anywhere; }
 .prose > :first-child:not([hidden]),.prose > [hidden] + :not([hidden]) { margin-top: 0; }
 .prose p,.prose ul,.prose ol { margin: 0 0 1.12em; }

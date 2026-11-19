@@ -30,3 +30,50 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
   </div>
   <div class="article-end"><a href="/blog/">← 返回技术博客</a></div>
 </Base>
+
+<script>
+  const toc = document.querySelector<HTMLElement>('.toc');
+  if (toc) {
+    const sections = Array.from(toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')).flatMap((link) => {
+      const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      return heading ? [{ heading, link }] : [];
+    });
+
+    let current: HTMLAnchorElement | undefined;
+    let frame: number | undefined;
+
+    function updateCurrent() {
+      frame = undefined;
+      const threshold = Math.min(112, window.innerHeight * 0.2);
+      const atEnd = window.scrollY > 0 &&
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      const section = atEnd
+        ? sections.at(-1)
+        : sections.findLast(({ heading }) => heading.getBoundingClientRect().top <= threshold);
+      const next = section?.link;
+      if (next === current) return;
+
+      current?.removeAttribute('aria-current');
+      current = next;
+      if (!current) return;
+
+      current.setAttribute('aria-current', 'location');
+      if (toc && toc.scrollHeight > toc.clientHeight) {
+        const item = current.getBoundingClientRect();
+        const bounds = toc.getBoundingClientRect();
+        if (item.top < bounds.top) toc.scrollTop += item.top - bounds.top;
+        else if (item.bottom > bounds.bottom) toc.scrollTop += item.bottom - bounds.bottom;
+      }
+    }
+
+    function scheduleUpdate() {
+      frame ??= requestAnimationFrame(updateCurrent);
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('hashchange', scheduleUpdate);
+    window.addEventListener('load', scheduleUpdate, { once: true });
+    scheduleUpdate();
+  }
+</script>
