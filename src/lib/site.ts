@@ -7,6 +7,7 @@ export const site = {
   cohort: 2025,
   interests: '关注深度学习、AI 基础设施与计算机系统。这里记录我的技术文章和项目实践。',
   awards: [
+    { year: '2026.11', title: '全国大学生数学竞赛广东省一等奖' },
     { year: '2025–2026', title: '中山大学校级一等奖学金' },
     { year: '2025–2026', title: '国家奖学金' },
   ],
